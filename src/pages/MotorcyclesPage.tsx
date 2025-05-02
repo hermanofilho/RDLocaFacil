@@ -1,35 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { registrarLog } from '@/utils/log';
 import { PageHeader } from '@/components/PageHeader';
-import { registrarLog } from '@/utils/log';
 import { Button } from '@/components/ui/button';
-import { registrarLog } from '@/utils/log';
 import { Plus, Search, Edit, Trash2, Car } from 'lucide-react';
-import { registrarLog } from '@/utils/log';
 import { Input } from '@/components/ui/input';
-import { registrarLog } from '@/utils/log';
 import { supabase } from '@/integrations/supabase/client';
-import { registrarLog } from '@/utils/log';
 import { Motorcycle } from '@/types';
-import { registrarLog } from '@/utils/log';
 import { MotorcycleForm } from '@/components/motorcycles/MotorcycleForm';
-import { registrarLog } from '@/utils/log';
 import { useToast } from '@/hooks/use-toast';
-import { registrarLog } from '@/utils/log';
 import { 
   Card, 
   CardContent, 
-  CardDescription, 
   CardFooter, 
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
-import { registrarLog } from '@/utils/log';
 import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const MotorcyclesPage: React.FC = () => {
   const { userRole } = useAuth();
-  
   const [motorcycles, setMotorcycles] = useState<Motorcycle[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -45,13 +35,8 @@ export const MotorcyclesPage: React.FC = () => {
         .select('*')
         .order('createdat', { ascending: false });
 
-      if (error) {
-    registrarLog(user?.email || '', 'Exclusão', 'Moto', `Removeu moto com id ${id}`);
-        console.error('Error details:', error);
-        throw error;
-      }
+      if (error) throw error;
 
-      // Map the data to match our Motorcycle type
       const motorcyclesData = data as any[] || [];
       const formattedMotorcycles = motorcyclesData.map(motorcycle => ({
         id: motorcycle.id,
@@ -70,7 +55,6 @@ export const MotorcyclesPage: React.FC = () => {
 
       setMotorcycles(formattedMotorcycles);
     } catch (error) {
-      console.error('Error fetching motorcycles:', error);
       toast({
         title: "Erro",
         description: "Não foi possível carregar as motos",
@@ -107,7 +91,6 @@ export const MotorcyclesPage: React.FC = () => {
         
         fetchMotorcycles();
       } catch (error) {
-        console.error('Error deleting motorcycle:', error);
         toast({
           title: "Erro",
           description: "Não foi possível excluir a moto",
@@ -131,7 +114,6 @@ export const MotorcyclesPage: React.FC = () => {
     }
   };
 
-  // Updated to use proper badge variants
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'available':
@@ -167,11 +149,7 @@ export const MotorcyclesPage: React.FC = () => {
 
   return (
     <div className="container mx-auto py-6">
-      <PageHeader 
-        title="Motos" 
-        description="Gerencie o cadastro de motos" 
-      />
-      
+      <PageHeader title="Motos" description="Gerencie o cadastro de motos" />
       <div className="flex justify-between items-center mb-6">
         <div className="flex gap-4 w-1/2">
           <Input 
@@ -198,9 +176,7 @@ export const MotorcyclesPage: React.FC = () => {
             <div className="text-center py-10">
               <Car className="mx-auto h-12 w-12 text-gray-400" />
               <h3 className="mt-2 text-sm font-medium text-gray-900">Nenhuma moto encontrada</h3>
-              <p className="mt-1 text-sm text-gray-500">
-                Cadastre uma nova moto para começar.
-              </p>
+              <p className="mt-1 text-sm text-gray-500">Cadastre uma nova moto para começar.</p>
               <div className="mt-6">
                 <Button onClick={() => setIsFormOpen(true)}>
                   <Plus className="mr-2 h-4 w-4" />
@@ -215,11 +191,7 @@ export const MotorcyclesPage: React.FC = () => {
                   <CardHeader className="p-0">
                     <div className="h-40 bg-gray-200 flex items-center justify-center">
                       {motorcycle.photo ? (
-                        <img 
-                          src={motorcycle.photo} 
-                          alt={`${motorcycle.brand} ${motorcycle.model}`}
-                          className="h-full w-full object-cover"
-                        />
+                        <img src={motorcycle.photo} alt={`${motorcycle.brand} ${motorcycle.model}`} className="h-full w-full object-cover" />
                       ) : (
                         <Car className="h-16 w-16 text-gray-400" />
                       )}
@@ -257,9 +229,18 @@ export const MotorcyclesPage: React.FC = () => {
                       <Edit className="h-4 w-4 mr-1" />
                       Editar
                     </Button>
-                    <Button variant="outline" size="sm" className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700" onClick={() => handleDeleteMotorcycle(motorcycle.id)}>
-                      {userRole === 'admin' && (<Trash2 className="h-4 w-4 mr-1" />
-                      Excluir
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                      onClick={() => handleDeleteMotorcycle(motorcycle.id)}
+                    >
+                      {userRole === 'admin' && (
+                        <>
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          Excluir
+                        </>
+                      )}
                     </Button>
                   </CardFooter>
                 </Card>
