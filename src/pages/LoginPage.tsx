@@ -293,9 +293,6 @@ const LoginPage: React.FC = () => {
           </Tabs>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <p className="text-sm text-gray-500">
-            Acesso padrão: admin / 123456
-          </p>
         </CardFooter>
       </Card>
     </div>
