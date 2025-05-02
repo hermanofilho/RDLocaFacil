@@ -4,7 +4,7 @@ import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 
-export const DashboardPage: React.FC = () => {
+const DashboardPage: React.FC = () => {
   const [summary, setSummary] = useState({
     totalClients: 0,
     totalMotorcycles: 0,
@@ -134,3 +134,5 @@ export const DashboardPage: React.FC = () => {
     </div>
   );
 };
+
+export default DashboardPage;
